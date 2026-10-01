@@ -1,0 +1,57 @@
+class Solution(object):
+    def addOperators(self, num, target):
+        """
+        :type num: str
+        :type target: int
+        :rtype: List[str]
+        """
+        result = []
+
+        def backtrack(index, expression, value, prev):
+            if index == len(num):
+                if value == target:
+                    result.append(expression)
+                return
+
+            for i in range(index, len(num)):
+                # Avoid numbers with leading zeros
+                if i > index and num[index] == '0':
+                    break
+
+                current = int(num[index:i + 1])
+
+                if index == 0:
+                    backtrack(
+                        i + 1,
+                        str(current),
+                        current,
+                        current
+                    )
+                else:
+                    # Addition
+                    backtrack(
+                        i + 1,
+                        expression + "+" + str(current),
+                        value + current,
+                        current
+                    )
+
+                    # Subtraction
+                    backtrack(
+                        i + 1,
+                        expression + "-" + str(current),
+                        value - current,
+                        -current
+                    )
+
+                    # Multiplication
+                    backtrack(
+                        i + 1,
+                        expression + "*" + str(current),
+                        value - prev + prev * current,
+                        prev * current
+                    )
+
+        backtrack(0, "", 0, 0)
+
+        return result
